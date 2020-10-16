@@ -67,7 +67,7 @@
               </template>
             </el-collapse>
           </div>
-          <div style="margin-top: 20px;height: 47%">
+          <div style="margin-top: 20px;">
             <h3>
               已选课程
             </h3>
@@ -100,6 +100,11 @@
                 </template>
               </el-table-column>
             </el-table>
+          </div>
+          <div style="margin-top: 30px;float: right">
+            <el-button style="margin-right: 20px" type="danger">退  选</el-button>
+            <el-button style="margin-right: 20px" type="primary">重设退选</el-button>
+            <el-button @click="clearSelect" style="margin-right: 20px">重设锁定</el-button>
           </div>
         </el-aside>
         <el-main>
