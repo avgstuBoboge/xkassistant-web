@@ -1,9 +1,9 @@
 <template>
-  <div style="margin-top: 20px">
-    <PageNav></PageNav>
+  <div>
+    <PageNav v-if="!isHomePage"></PageNav>
     <div class="page">
       <router-view></router-view>
-      <PageFoot></PageFoot>
+      <PageFoot v-if="!isHomePage"></PageFoot>
     </div>
   </div>
 </template>
@@ -17,15 +17,49 @@ export default {
   components: {
     PageFoot,
     PageNav
+  },
+  data() {
+    return {}
+  },
+  computed: {
+    isHomePage() {
+      return this.$route.path === '/'
+    }
+  },
+  created() {
+    console.log(this.$route)
   }
 }
 </script>
 
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 .page {
   width: 100%;
-  margin-top: 2%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.horizontal-center {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.vertical-center {
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.center {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

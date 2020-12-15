@@ -93,7 +93,7 @@
                   <div v-html="scope.row.courseTeacher"></div>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" align="center" width="155px" fixed="right">
+              <el-table-column label="操作" align="center" width="160px" fixed="right">
                 <template slot-scope="scope">
                   <el-checkbox v-model="scope.row.quit">退选</el-checkbox>
                   <el-checkbox v-model="scope.row.lock">锁定</el-checkbox>
