@@ -5,10 +5,13 @@
         class="menu"
         mode="horizontal"
         router>
+      <img src="../../assets/logo.jpg" style="width: 58px; height: 58px;float: left;position: relative"/>
       <el-menu-item index="/" class="menu-item" route="/">首 页</el-menu-item>
       <el-menu-item index="/main" class="menu-item" route="/main">选 课</el-menu-item>
-      <el-menu-item class="menu-item">已修课程查询</el-menu-item>
-      <el-menu-item class="menu-item">管 理</el-menu-item>
+      <el-menu-item index="/credit" class="menu-item" route="/credit">已修课程查询</el-menu-item>
+      <template v-if="this.$store.state.user.isAdmin">
+        <el-menu-item index="/admin" class="menu-item" route="/admin">管 理</el-menu-item>
+      </template>
       <div class="user-box">
         <template v-if="login">
           <span style="margin-right: 15px">欢迎您, {{ username }}</span>
@@ -29,7 +32,8 @@ export default {
     return {
       activeIndex: '1',
       login: false,
-      username: 'test'
+      username: 'test',
+      fit: 'fill'
     };
   },
   methods: {

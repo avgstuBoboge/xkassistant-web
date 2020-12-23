@@ -2,6 +2,7 @@
   <div class="page-foot">
     <p>
       <el-divider></el-divider>
+      Copyright &copy; 2020-{{ new Date().getFullYear() }} SE2020-G16. All Rights Reserved.<br>
       Powered by
       <el-link type="primary" href="https://github.com/avgstuBoboge">avgstuBoboge</el-link>
       &
@@ -20,6 +21,7 @@ export default {
 
 <style scoped>
 .page-foot {
+  background-color: rgba(247, 251, 253, 1);
   height: 120px;
   width: 100%;
   text-align: center;

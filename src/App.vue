@@ -44,6 +44,13 @@ html, body {
   margin-right: auto;
 }
 
+.page-part {
+  width: 95%;
+  margin-top: 2%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .horizontal-center {
   position: relative;
   left: 50%;

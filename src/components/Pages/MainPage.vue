@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-part">
     <el-card shadow="never">
       <el-container style="height: 780px">
         <el-aside width="30%">
@@ -31,47 +31,52 @@
                            style="color: #ffffff;background-color: #409eff;"></el-button>
               </el-input>
             </div>
-            <el-checkbox v-model="inPlan">仅查看计划内课程</el-checkbox>
-            <el-checkbox v-model="noConflict">仅查看未冲突课程</el-checkbox>
-            <el-collapse style="margin-top: 10px">
-              <template v-for="(item,index) in results">
-                <el-collapse-item :title="item.courseName" :name="index" :key="index">
-                  <el-table stripe
-                            border
-                            style="border-radius: 4px"
-                            :data="item.tableData">
-                    <el-table-column label="教师" align="center" width="100px">
-                      <template slot-scope="scope">
-                        <div v-html="scope.row.courseTeacher"></div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="时间" align="center">
-                      <template slot-scope="scope">
-                        <div v-html="scope.row.courseTime"></div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="地点" align="center">
-                      <template slot-scope="scope">
-                        <div v-html="scope.row.courseAddress"></div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column width="92px">
-                      <template slot-scope="scope">
-                        <el-button size="medium" type="primary" @click="submit(scope.$index)">
-                          选课
-                        </el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-collapse-item>
-              </template>
-            </el-collapse>
+            <el-row>
+              <el-checkbox v-model="inPlan">仅查看计划内课程</el-checkbox>
+              <el-checkbox v-model="noConflict">仅查看未冲突课程</el-checkbox>
+            </el-row>
+            <el-row>
+              <el-collapse style="margin-top: 10px;">
+                <template v-for="(item,index) in results">
+                  <el-collapse-item :title="item.courseName" :name="index" :key="index">
+                    <el-table stripe
+                              border
+                              style="border-radius: 4px"
+                              :data="item.tableData">
+                      <el-table-column label="教师" align="center" width="100px">
+                        <template slot-scope="scope">
+                          <div v-html="scope.row.courseTeacher"></div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="时间" align="center">
+                        <template slot-scope="scope">
+                          <div v-html="scope.row.courseTime"></div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="地点" align="center">
+                        <template slot-scope="scope">
+                          <div v-html="scope.row.courseAddress"></div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column width="92px">
+                        <template slot-scope="scope">
+                          <el-button size="medium" type="primary" @click="submit(scope.$index)">
+                            选课
+                          </el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-collapse-item>
+                </template>
+              </el-collapse>
+            </el-row>
           </div>
           <div style="margin-top: 20px;">
             <h3>
               已选课程
             </h3>
             <el-table style="margin-top: 20px"
+                      border
                       :data="selectedCourses">
               <el-table-column label="课程" align="center" fixed="left">
                 <template slot-scope="scope">
@@ -102,7 +107,7 @@
             </el-table>
           </div>
           <div style="margin-top: 30px;float: right">
-            <el-button style="margin-right: 20px" type="danger">退  选</el-button>
+            <el-button style="margin-right: 20px" type="danger">退 选</el-button>
             <el-button style="margin-right: 20px" type="primary">重设退选</el-button>
             <el-button @click="clearSelect" style="margin-right: 20px">重设锁定</el-button>
           </div>

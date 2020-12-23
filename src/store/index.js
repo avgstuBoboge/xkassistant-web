@@ -10,6 +10,11 @@ var state = {
     page: null,
     api: api,
     debug: debug,
+    user: {
+        username: '',
+        password: '',
+        isAdmin: false
+    }
 }
 
 var mutations = {}
