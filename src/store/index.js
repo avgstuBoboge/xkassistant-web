@@ -12,12 +12,16 @@ var state = {
     debug: debug,
     user: {
         username: '',
-        password: '',
+        xkAccount: '',
         isAdmin: false
     }
 }
 
-var mutations = {}
+var mutations = {
+    savePage(state, page) {
+        state.page = page
+    }
+}
 
 export default new Vuex.Store({
     state,

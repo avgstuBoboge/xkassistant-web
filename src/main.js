@@ -18,4 +18,8 @@ new Vue({
     router,
     store,
     render: h => h(App),
+    created() {
+        store.commit('savePage', this)
+        this.$store.commit('updateUser')
+    }
 }).$mount('#app')

@@ -22,7 +22,18 @@ export default new Router({
             name: 'login-page',
             component: () => import('@/components/Pages/LoginPage'),
             meta: {}
+        },
+        {
+            path: '/register',
+            name: 'register-page',
+            component: () => import('@/components/Pages/RegisterPage'),
+            meta: {}
+        },
+        {
+            path: '/admin',
+            name: 'admin-page',
+            component: () => import('@/components/Pages/AdminPage'),
+            meta: {}
         }
-
     ],
 })

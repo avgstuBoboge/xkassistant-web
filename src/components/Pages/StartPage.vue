@@ -9,8 +9,8 @@
           <p style="font-size: 1.5rem">Show yourself</p>
         </div>
       </div>
-      <div class="content" style="border: 1px solid white;border-radius: 10px">
-        <div class="word-wrap" style="cursor: pointer" @click="goMain">
+      <div class="content button" style="border: 1px solid white;border-radius: 10px">
+        <div class="word-wrap" @click="goMain">
           <p style="font-size: 3rem; margin: 20px 0">Get Start</p>
         </div>
       </div>
@@ -28,7 +28,10 @@ export default {
   },
   methods: {
     goMain() {
-      this.$router.push('/main')
+      if (this.$store.state.user.username)
+        this.$router.push('/main')
+      else
+        this.$router.push('login')
     }
   }
 }
@@ -64,6 +67,14 @@ export default {
   width: 1px;
   height: 5rem;
   background-color: white;
+}
+
+.button {
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #ffffff33;
 }
 
 .fill {
