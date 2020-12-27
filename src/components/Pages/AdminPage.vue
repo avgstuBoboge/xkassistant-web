@@ -6,7 +6,10 @@
       </el-input>
     </div>
     <div style="margin-left: auto;margin-right: auto;width: 69%">
-      <el-button @click="createForm=[];createDialogVis=true">+</el-button>
+      <el-button
+          @click="createForm={username: '',password: '',xkAccount: '',xkPassword: '',isAdmin: false,};createDialogVis=true">
+        +
+      </el-button>
     </div>
     <div style="margin-left: auto;margin-right: auto;width: 80%">
       <el-table :data="tableData">
@@ -118,8 +121,19 @@ export default {
         password: '**********',
         xkPassword: '**********'
       }],
-      editForm: [],
-      createForm: [],
+      editForm: {
+        username: '',
+        password: '',
+        xkAccount: '',
+        xkPassword: ''
+      },
+      createForm: {
+        username: '',
+        password: '',
+        xkAccount: '',
+        xkPassword: '',
+        isAdmin: false,
+      },
     }
   },
   methods: {
@@ -128,11 +142,22 @@ export default {
       console.log(username)
     },
     closeEditDialog() {
-      this.editForm = []
+      this.editForm = {
+        username: '',
+        password: '',
+        xkAccount: '',
+        xkPassword: ''
+      }
       this.editDialogVis = false
     },
     closeCreateDialog() {
-      this.createForm = []
+      this.createForm = {
+        username: '',
+        password: '',
+        xkAccount: '',
+        xkPassword: '',
+        isAdmin: false,
+      }
       this.createDialogVis = false
     }
   }

@@ -6,52 +6,32 @@
       <h1 align="center">用 户 设 置</h1>
       <el-divider><i class="el-icon-postcard"></i></el-divider>
       <el-form>
-        <el-form-item class="info">
-          <el-input class="info"
-                    v-model="username"
-                    disabled
-                    prefix-icon="el-icon-user">
-          </el-input>
+        <el-form-item class="info" label="用户:">
+          {{ this.username }}
         </el-form-item>
-        <el-form-item class="info">
-          <el-input class="info"
-                    placeholder="旧密码(必须)"
-                    v-model="password"
-                    type="password"
-                    show-password
-                    prefix-icon="el-icon-key">
-          </el-input>
+        <el-form-item class="info" label="密码:">
+          <el-button icon="el-icon-edit"
+
+                     type="text"
+                     @click="passwordDialogVis=true">
+            点击此处修改密码
+          </el-button>
         </el-form-item>
-        <el-form-item class="info">
-          <el-input class="info"
-                    placeholder="新密码"
-                    v-model="newPassword"
-                    type="password"
-                    show-password
-                    prefix-icon="el-icon-key">
-          </el-input>
-        </el-form-item>
-        <el-form-item class="info">
-          <el-input class="info"
-                    placeholder="请输入选课网账号"
-                    v-model="xkAccount"
-                    prefix-icon="el-icon-user">
-          </el-input>
-        </el-form-item>
-        <el-form-item class="info">
-          <el-input class="info"
-                    placeholder="请输入选课网密码"
-                    v-model="xkPassword"
-                    type="password"
-                    show-password
-                    prefix-icon="el-icon-key">
-          </el-input>
-        </el-form-item>
-        <el-form-item class="info">
-          <el-button type="primary" style="width: 100%" @click="submit">提 交</el-button>
+        <el-form-item class="info" label="选课:">
+          <el-button icon="el-icon-edit"
+                     type="text"
+                     @click="xkDialogVis=true">
+            点击此处修改绑定账号
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
+    <el-dialog :visible.sync="passwordDialogVis"
+               :before-close="closePasswordDialog"
+               :close-on-click-modal="false"
+               title="添加用户"
+               style="margin-left: auto;margin-right: auto;width: 50%">
+    </el-dialog>
   </div>
 </template>
 
@@ -61,15 +41,27 @@ export default {
   data() {
     return {
       username: this.$store.state.user.username,
-      password: '',
-      newPassword: '',
       xkAccount: this.$store.state.user.xkAccount,
-      xkPassword: ''
+      xkPassword: '',
+      passwordDialogVis: false,
+      xkDialogVis: false,
+      passwordForm: {
+        oldPassword: '',
+        newPassword: '',
+        newPassword2: ''
+      },
     }
   },
   methods: {
     submit() {
-      this.$router.push('/login')
+      this.$router.push('/main')
+    },
+    closePasswordDialog() {
+      this.passwordForm = {
+        oldPassword: '',
+        newPassword: '',
+        newPassword2: ''
+      }
     }
   }
 }

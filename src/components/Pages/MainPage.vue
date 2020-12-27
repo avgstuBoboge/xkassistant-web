@@ -40,28 +40,15 @@
                 <template v-for="(item,index) in results">
                   <el-collapse-item :title="item.courseName" :name="index" :key="index">
                     <el-table stripe
-                              border
                               style="border-radius: 4px"
                               :data="item.tableData">
-                      <el-table-column label="教师" align="center" width="100px">
+                      <el-table-column label="教师" align="center" prop="courseTeacher"></el-table-column>
+                      <el-table-column label="时间" align="center" prop="courseTime" width="200px"></el-table-column>
+                      <el-table-column label="地点" align="center" prop="courseAddress" width="200px"></el-table-column>
+                      <el-table-column fixed="right">
                         <template slot-scope="scope">
-                          <div v-html="scope.row.courseTeacher"></div>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="时间" align="center">
-                        <template slot-scope="scope">
-                          <div v-html="scope.row.courseTime"></div>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="地点" align="center">
-                        <template slot-scope="scope">
-                          <div v-html="scope.row.courseAddress"></div>
-                        </template>
-                      </el-table-column>
-                      <el-table-column width="92px">
-                        <template slot-scope="scope">
-                          <el-button size="medium" type="primary" @click="submit(scope.$index)">
-                            选课
+                          <el-button size="mini" type="primary" @click="submit(scope.$index)">
+                            添加
                           </el-button>
                         </template>
                       </el-table-column>
@@ -73,7 +60,7 @@
           </div>
           <div style="margin-top: 20px;">
             <h3>
-              已选课程
+              课程仓库
             </h3>
             <el-table style="margin-top: 20px"
                       border
@@ -182,12 +169,8 @@ export default {
         courseName: '软件工程',
         tableData: [{
           courseTeacher: '木长',
-          courseTime: '周四9:00',
-          courseAddress: '理四'
-        }, {
-          courseTeacher: '木长',
-          courseTime: '周四9:00',
-          courseAddress: '理四'
+          courseTime: '周二上午3,4; 周四下午6,7',
+          courseAddress: '理四530; 理四420'
         }]
       }, {}, {}, {}, {}]
     }
