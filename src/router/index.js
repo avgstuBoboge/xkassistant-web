@@ -34,6 +34,18 @@ export default new Router({
             name: 'admin-page',
             component: () => import('@/components/Pages/AdminPage'),
             meta: {}
+        },
+        {
+            path: '/setting',
+            name: 'setting-page',
+            component: () => import('@/components/Pages/SettingPage'),
+            meta: {}
+        },
+        {
+            path: '/credit',
+            name: 'credit-page',
+            component: () => import('@/components/Pages/CreditPage'),
+            meta: {}
         }
     ],
 })

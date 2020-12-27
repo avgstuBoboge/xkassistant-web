@@ -46,6 +46,7 @@ html, body {
 
 .page-part {
   width: 95%;
+  min-height: 800px;
   margin-top: 2%;
   margin-left: auto;
   margin-right: auto;
@@ -68,5 +69,9 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
 }
 </style>

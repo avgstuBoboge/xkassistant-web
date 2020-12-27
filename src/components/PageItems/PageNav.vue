@@ -18,8 +18,7 @@
       </template>
       <div class="user-box">
         <template v-if="this.$store.state.user.username">
-          <span style="margin-right: 15px">欢迎您, {{ this.$store.state.user.username }}</span>
-          <el-button type="danger" style="width: 100px;margin-top: 5%" @click="handleLogout">注 销</el-button>
+          <UserBox></UserBox>
         </template>
       </div>
     </el-menu>
@@ -27,8 +26,10 @@
 </template>
 
 <script>
+import UserBox from "@/components/PageItems/UserBox";
 export default {
   name: "page-nav",
+  components: {UserBox},
   data() {
     return {
       activeIndex: '1',
@@ -36,12 +37,6 @@ export default {
       username: 'test',
       fit: 'fill'
     };
-  },
-  methods: {
-    handleLogout() {
-      this.$store.state.user = {}
-      this.$router.push('/')
-    },
   }
 }
 </script>
