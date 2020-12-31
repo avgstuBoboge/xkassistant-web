@@ -41,8 +41,10 @@ export default {
   },
   methods: {
     submit() {
-      this.$store.state.user = {username: 'Boboge', xkAccount: '31801350', isAdmin: true}
-      this.$router.push('/main')
+      this.$store.commit('login', {
+        username: this.username,
+        password: this.password
+      })
     },
     goRegister() {
       this.$router.push('/register')

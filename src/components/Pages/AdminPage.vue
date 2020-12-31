@@ -8,7 +8,7 @@
     <div style="margin-left: auto;margin-right: auto;width: 69%">
       <el-button
           @click="createForm={username: '',password: '',xkAccount: '',xkPassword: '',isAdmin: false,};createDialogVis=true">
-        +
+        <i class="el-icon-plus"/>
       </el-button>
     </div>
     <div style="margin-left: auto;margin-right: auto;width: 80%">
@@ -38,9 +38,9 @@
     </div>
     <el-dialog :visible.sync="createDialogVis"
                :before-close="closeCreateDialog"
-               :close-on-click-modal="false"
+               append-to-body
                title="添加用户"
-               style="margin-left: auto;margin-right: auto;width: 50%">
+               width="25%">
       <el-form ref="createForm" :model="createForm">
         <el-form-item label="用户名">
           <el-input disabled v-model="createForm.username"
@@ -73,9 +73,9 @@
     </el-dialog>
     <el-dialog :visible.sync="editDialogVis"
                :before-close="closeEditDialog"
-               :close-on-click-modal="false"
+               append-to-body
                title="编辑用户"
-               style="margin-left: auto;margin-right: auto;width: 50%">
+               width="25%">
       <el-form ref="editForm" :model="editForm">
         <el-form-item label="用户名">
           <el-input disabled v-model="editForm.username"
@@ -159,6 +159,19 @@ export default {
         isAdmin: false,
       }
       this.createDialogVis = false
+    },
+    permissionCheck() {
+      if (this.$store.state.user.isUpdated) {
+        if (!this.$store.state.user.isAdmin) {
+          this.$router.replace('/error401')
+        } else {
+          this.getData()
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
     }
   }
 }

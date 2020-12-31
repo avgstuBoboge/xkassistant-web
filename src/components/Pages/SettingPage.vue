@@ -28,9 +28,46 @@
     </el-card>
     <el-dialog :visible.sync="passwordDialogVis"
                :before-close="closePasswordDialog"
-               :close-on-click-modal="false"
-               title="添加用户"
-               style="margin-left: auto;margin-right: auto;width: 50%">
+               append-to-body
+               title="修改密码"
+               width="25%">
+      <el-form :model="passwordForm">
+        <el-form-item label="旧密码">
+          <el-input v-model="passwordForm.oldPassword" type="password" show-password
+                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码">
+          <el-input v-model="passwordForm.newPassword" type="password" show-password
+                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+        </el-form-item>
+        <el-form-item label="重复密码">
+          <el-input v-model="passwordForm.newPassword2" type="password" show-password
+                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" style="width: 20%;float: right;margin-right: 65%" @click="submitPassword">提交
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog :visible.sync="xkDialogVis"
+               :before-close="closeXkDialog"
+               append-to-body
+               title="修改绑定账号"
+               width="25%">
+      <el-form :model="xkForm">
+        <el-form-item label="选课账号">
+          <el-input v-model="xkForm.xkAccount" style="width: 80%;float: right;margin-right: 5%"></el-input>
+        </el-form-item>
+        <el-form-item label="选课密码">
+          <el-input v-model="xkForm.xkPassword" type="password" show-password
+                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" style="width: 20%;float: right;margin-right: 65%" @click="submitXk">提交
+          </el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
   </div>
 </template>
@@ -41,8 +78,6 @@ export default {
   data() {
     return {
       username: this.$store.state.user.username,
-      xkAccount: this.$store.state.user.xkAccount,
-      xkPassword: '',
       passwordDialogVis: false,
       xkDialogVis: false,
       passwordForm: {
@@ -50,11 +85,18 @@ export default {
         newPassword: '',
         newPassword2: ''
       },
+      xkForm: {
+        xkAccount: this.$store.state.user.xkAccount,
+        xkPassword: ''
+      }
     }
   },
   methods: {
-    submit() {
-      this.$router.push('/main')
+    submitPassword() {
+      this.closePasswordDialog()
+    },
+    submitXk() {
+      this.closeXkDialog()
     },
     closePasswordDialog() {
       this.passwordForm = {
@@ -62,6 +104,14 @@ export default {
         newPassword: '',
         newPassword2: ''
       }
+      this.passwordDialogVis = false
+    },
+    closeXkDialog() {
+      this.xkForm = {
+        xkAccount: this.$store.state.user.xkAccount,
+        xkPassword: ''
+      }
+      this.xkDialogVis = false
     }
   }
 }
