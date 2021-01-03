@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 
 const debug = true
-const api = debug ? 'http://10.66.2.166:8090' : 'https://xkb.thebbg.top'
+const api = debug ? 'http://10.67.167.13:8090' : 'https://xkb.thebbg.top'
 var state = {
     page: null,
     api: api,
@@ -24,26 +24,31 @@ var mutations = {
     },
     updateUser(state) {
         state.page.$http.get(api + '/user/now')
-            .then(data => {
-                if (data.data.code === 200) {
-                    state.user.userid = data.data.data.username
-                    state.user.xkAccount = data.data.data.xkAccount
-                    state.user.isAdmin = data.data.data.isAdmin
+            .then(resp => {
+                if (resp.data.code === 200) {
+                    state.user.username = resp.data.data.username
+                    state.user.xkAccount = resp.data.data.xkId
+                    state.user.isAdmin = resp.data.data.isAdmin
                     state.user.isUpdated = true
                 } else {
-                    state.page.$message.error(data.data.msg)
+                    if (state.page.$route.path !== '/' && state.page.$route.path !== '/login') {
+                        state.page.$message.error(resp.data.msg)
+                    }
+                    state.user.isUpdated = true
                 }
             })
     },
     login(state, data) {
-        state.page.$http.post(api + '/user/login', {
-            username: data.username,
-            password: data.password
-        })
+        var params = new FormData();
+        params.append('username', data.username)
+        params.append('password', data.password)
+        state.page.$http.post(api + '/user/login', params)
             .then(data => {
                 if (data.data.code === 200) {
-                    state.page.$store.commit('updateUser')
                     state.page.$message.success(data.data.msg)
+                    console.log(data)
+                    console.log('update')
+                    state.page.$store.commit('updateUser')
                     state.page.$router.push('/main')
                 } else {
                     state.page.$message.error(data.data.msg)
@@ -51,7 +56,7 @@ var mutations = {
             })
     },
     logout(state) {
-        state.page.$http.delete(api + '/user/logout')
+        state.page.$http.post(api + '/user/logout')
             .then(data => {
                 if (data.data.code === 200) {
                     state.user = {
@@ -68,18 +73,19 @@ var mutations = {
             })
     },
     register(state, data) {
-        state.page.$http.post(api + '/user/register', {
-            username: data.username,
-            password: data.password
-        }).then(data => {
-            if (data.data.code === 200) {
-                state.page.$store.commit('updateUser')
-                state.page.$message.success(data.data.msg)
-                state.page.$router.push('/login')
-            } else {
-                state.page.$message.error(data.data.msg)
-            }
-        })
+        var params = new FormData();
+        params.append('username', data.username)
+        params.append('password', data.password)
+        state.page.$http.post(api + '/user/register', params)
+            .then(data => {
+                if (data.data.code === 200) {
+                    state.page.$store.commit('updateUser')
+                    state.page.$message.success(data.data.msg)
+                    state.page.$router.push('/login')
+                } else {
+                    state.page.$message.error(data.data.msg)
+                }
+            })
     },
 }
 

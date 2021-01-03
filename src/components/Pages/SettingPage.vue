@@ -93,9 +93,38 @@ export default {
   },
   methods: {
     submitPassword() {
+      if (this.passwordForm.newPassword !== this.passwordForm.newPassword2) {
+        this.$store.state.page.$message.error('两次输入密码不一致!')
+        return
+      }
+      var params = new FormData();
+      params.append('username', this.$store.state.user.username)
+      params.append('password', this.passwordForm.oldPassword)
+      params.append('newPassword', this.passwordForm.newPassword)
+      this.$store.state.page.$http.post(this.$store.state.api + '/user/updatePassword', params)
+          .then(resp => {
+            if (resp.data.code === 200) {
+              this.$store.state.page.$message.success(resp.data.msg)
+            } else {
+              this.$store.state.page.$message.error(resp.data.msg)
+            }
+          })
       this.closePasswordDialog()
     },
     submitXk() {
+      var params = new FormData();
+      params.append('username', this.$store.state.user.username)
+      params.append('xkId', this.xkForm.xkAccount)
+      params.append('xkPwd', this.xkForm.xkPassword)
+      this.$store.state.page.$http.post(this.$store.state.api + '/user/updateXk', params)
+          .then(resp => {
+            if (resp.data.code === 200) {
+              this.$store.state.page.$message.success(resp.data.msg)
+              this.$store.commit('updateUser')
+            } else {
+              this.$store.state.page.$message.error(resp.data.msg)
+            }
+          })
       this.closeXkDialog()
     },
     closePasswordDialog() {

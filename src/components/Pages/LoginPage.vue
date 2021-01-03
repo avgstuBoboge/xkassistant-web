@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item class="info">
         <el-button type="primary" style="width: 45%" @click="submit">登 录</el-button>
-        <el-button type="success" style="width: 45%" @click="goRegister">注 册</el-button>
+        <el-button type="success" style="margin-left: 10%;width: 45%" @click="goRegister">注 册</el-button>
       </el-form-item>
     </el-form>
   </el-card>

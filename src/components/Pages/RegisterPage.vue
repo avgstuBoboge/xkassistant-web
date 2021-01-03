@@ -3,51 +3,53 @@
     <el-image src="logo.jpg" class="horizontal-center">
     </el-image>
     <h1 align="center">用 户 注 册</h1>
-    <el-divider><i class="el-icon-postcard"></i></el-divider>
-    <el-form>
-      <el-form-item class="info">
+    <el-divider><i class="el-icon-postcard"/></el-divider>
+    <el-form :rules="rules" ref="FormData" :model="FormData" status-icon class="demo-ruleForm">
+      <el-form-item class="info" prop="username">
         <el-input class="info"
                   placeholder="请输入用户名"
-                  v-model="username"
+                  v-model="FormData.username"
                   prefix-icon="el-icon-user">
         </el-input>
       </el-form-item>
-      <el-form-item class="info">
+      <el-form-item class="info" prop="password">
         <el-input class="info"
                   placeholder="请输入密码"
-                  v-model="password"
+                  v-model="FormData.password"
                   type="password"
                   show-password
                   prefix-icon="el-icon-key">
         </el-input>
       </el-form-item>
-      <el-form-item class="info">
+      <el-form-item class="info" prop="password2">
         <el-input class="info"
                   placeholder="确认密码"
-                  v-model="password2"
+                  v-model="FormData.password2"
                   type="password"
                   show-password
-                  prefix-icon="el-icon-key">
+                  prefix-icon="el-icon-key"
+                  @keyup.enter.native="submitForm('FormData')">
         </el-input>
       </el-form-item>
+      <!--      <el-form-item class="info">-->
+      <!--        <el-input class="info"-->
+      <!--                  placeholder="请输入选课网账号"-->
+      <!--                  v-model="xkAccount"-->
+      <!--                  prefix-icon="el-icon-user">-->
+      <!--        </el-input>-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item class="info">-->
+      <!--        <el-input class="info"-->
+      <!--                  placeholder="请输入选课网密码"-->
+      <!--                  v-model="xkPassword"-->
+      <!--                  type="password"-->
+      <!--                  show-password-->
+      <!--                  prefix-icon="el-icon-key">-->
+      <!--        </el-input>-->
+      <!--      </el-form-item>-->
       <el-form-item class="info">
-        <el-input class="info"
-                  placeholder="请输入选课网账号"
-                  v-model="xkAccount"
-                  prefix-icon="el-icon-user">
-        </el-input>
-      </el-form-item>
-      <el-form-item class="info">
-        <el-input class="info"
-                  placeholder="请输入选课网密码"
-                  v-model="xkPassword"
-                  type="password"
-                  show-password
-                  prefix-icon="el-icon-key">
-        </el-input>
-      </el-form-item>
-      <el-form-item class="info">
-        <el-button type="primary" style="width: 100%" @click="submit">提 交</el-button>
+        <el-button type="primary" style="width: 45%" @click="submitForm('FormData')">提 交</el-button>
+        <el-button type="danger" style="margin-left:10%;width: 45%" @click="goBack">取 消</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -58,16 +60,46 @@ export default {
   name: "RegisterPage",
   data() {
     return {
-      username: '',
-      password: '',
-      password2: '',
-      xkAccount: '',
-      xkPassword: ''
+      FormData: {
+        username: '',
+        password: '',
+        password2: ''
+      },
+      rules: {
+        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'}],
+        password2: [{required: true, message: '请确认密码', trigger: 'blur'}],
+      }
     }
   },
   methods: {
-    submit() {
-      this.$router.push('/login')
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.FormData.password !== this.FormData.password2) {
+            this.$store.state.page.$message.error('两次输入的密码不一致!')
+            this.FormData.username = ''
+            this.FormData.password = ''
+            this.FormData.password2 = ''
+            return false
+          }
+          this.$store.commit('register', {
+            username: this.FormData.username,
+            password: this.FormData.password
+          })
+          this.FormData.username = ''
+          this.FormData.password = ''
+          this.FormData.password2 = ''
+        } else {
+          this.FormData.username = ''
+          this.FormData.password = ''
+          this.FormData.password2 = ''
+          return false
+        }
+      })
+    },
+    goBack() {
+      this.$router.back()
     }
   }
 }

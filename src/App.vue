@@ -74,4 +74,8 @@ html, body {
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
 }
+
+.el-table__fixed-right {
+  height: 100% !important;
+}
 </style>

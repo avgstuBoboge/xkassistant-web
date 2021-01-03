@@ -31,7 +31,7 @@ export default {
       if (this.$store.state.user.username)
         this.$router.push('/main')
       else
-        this.$router.push('login')
+        this.$router.push('/login')
     }
   }
 }

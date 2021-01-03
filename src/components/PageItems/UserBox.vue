@@ -29,7 +29,7 @@ export default {
       this.$router.push('/setting')
     },
     handleLogout() {
-      this.$store.state.user = {}
+      this.$store.commit('logout')
       this.$router.push('/')
     },
     handleCommand(Command) {
