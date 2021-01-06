@@ -23,7 +23,8 @@
                        inactive-text="搜索全部课程">
             </el-switch>
           </div>
-          <el-card style="margin-top: 20px;height: 30%;overflow:auto">
+          <el-card style="margin-top: 20px;height: 30%;overflow:auto" v-loading="searchLoading"
+                   element-loading-text="拼命加载中">
             <div style="height: 100%;">
               <el-collapse style="margin-top: 10px;" accordion>
                 <template v-for="(item,index) in results">
@@ -62,7 +63,8 @@
           <h3>
             课程仓库
           </h3>
-          <el-card style="margin-top: 20px;height: 40%;overflow: auto">
+          <el-card style="margin-top: 20px;height: 35%;overflow: auto" v-loading="tableLoading"
+                   element-loading-text="拼命加载中">
             <el-table style="margin-top: 20px"
                       border
                       @cell-mouse-enter="setTimeTable"
@@ -80,7 +82,7 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column label="教师" align="center">
+              <el-table-column label="教师" align="center">conso
                 <template slot-scope="scope">
                   {{ scope.row.teacher }}
                 </template>
@@ -94,14 +96,15 @@
                 </template>
               </el-table-column>
             </el-table>
-            <div style="margin-top: 30px;float: right">
-              <el-button style="margin-right: 20px" type="primary" @click="saveGit">保存仓库</el-button>
-              <el-button style="margin-right: 20px" type="danger" @click="clearGit">清空仓库</el-button>
-            </div>
           </el-card>
+          <div style="margin-top: 30px;float: right">
+            <el-button style="margin-right: 20px" type="primary" @click="saveGit">保存仓库</el-button>
+            <el-button style="margin-right: 20px" type="danger" @click="clearGit">清空仓库</el-button>
+          </div>
         </el-aside>
         <el-main>
-          <el-card>
+          <p style="font-size: 20px;margin-bottom: 12px;margin-top: 0">注: 课表出现问题请刷新页面，使用中出现任何问题请反馈。QQ:1026751519</p>
+          <el-card v-loading="tableLoading" element-loading-text="拼命加载中">
             <el-table border
                       :key="tableKey"
                       :data="classTableData"
@@ -175,6 +178,8 @@ export default {
   },
   data() {
     return {
+      searchLoading: true,
+      tableLoading: true,
       tableKey: 0,
       tmp: [],
       classTableData: [],
@@ -285,6 +290,7 @@ export default {
   methods: {
     doSearch() {
       if (this.inPlan) return
+      this.searchLoading = true
       var params = new FormData();
       params.append('keywords', this.search)
       this.$store.state.page.$http.post(this.$store.state.api + '/course/search', params)
@@ -294,6 +300,7 @@ export default {
             } else {
               this.$store.state.page.$message.error(resp.data.msg)
             }
+            this.searchLoading = false
           })
     },
     setTimeTable(row) {
@@ -379,6 +386,7 @@ export default {
             } else {
               this.$store.state.page.$message.error(resp.data.msg)
             }
+            this.tableLoading = false
           })
     },
     planChange() {
@@ -418,6 +426,7 @@ export default {
             } else {
               this.$store.state.page.$message.error(resp.data.msg)
             }
+            this.searchLoading = false
           })
     },
     updateCourse(row) {
@@ -470,8 +479,8 @@ export default {
           .then(resp => {
             if (resp.data.code === 200) {
               this.$store.state.page.$message.success(resp.data.msg)
-              this.refreshStyle()
               this.getGit()
+              this.refreshStyle()
             } else {
               this.$store.state.page.$message.error(resp.data.msg)
             }
@@ -501,6 +510,12 @@ export default {
     }
   },
   created() {
+    if (this.$store.state.user.xkAccount === '') {
+      this.$store.state.page.$message.error('请先绑定选课网账号!')
+      this.$router.push('/setting')
+    }
+    this.searchLoading = true
+    this.tableLoading = true
     for (let i = 0; i < 12; ++i) {
       let data = []
       for (let j = 0; j < 7; ++j) {

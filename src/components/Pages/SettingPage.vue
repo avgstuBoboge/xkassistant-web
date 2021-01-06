@@ -7,11 +7,10 @@
       <el-divider><i class="el-icon-postcard"></i></el-divider>
       <el-form>
         <el-form-item class="info" label="用户:">
-          {{ this.username }}
+          {{ this.$store.state.user.username }}
         </el-form-item>
         <el-form-item class="info" label="密码:">
           <el-button icon="el-icon-edit"
-
                      type="text"
                      @click="passwordDialogVis=true">
             点击此处修改密码
@@ -31,7 +30,7 @@
                append-to-body
                title="修改密码"
                width="25%">
-      <el-form :model="passwordForm">
+      <el-form :model="passwordForm" v-loading="passwordLoading" element-loading-text="修改中">
         <el-form-item label="旧密码">
           <el-input v-model="passwordForm.oldPassword" type="password" show-password
                     style="width: 80%;float: right;margin-right: 5%"></el-input>
@@ -55,7 +54,7 @@
                append-to-body
                title="修改绑定账号"
                width="25%">
-      <el-form :model="xkForm">
+      <el-form :model="xkForm" v-loading="xkLoading" element-loading-text="爬取选课网账号信息中">
         <el-form-item label="选课账号">
           <el-input v-model="xkForm.xkAccount" style="width: 80%;float: right;margin-right: 5%"></el-input>
         </el-form-item>
@@ -77,7 +76,8 @@ export default {
   name: "Setting",
   data() {
     return {
-      username: this.$store.state.user.username,
+      xkLoading: false,
+      passwordLoading: false,
       passwordDialogVis: false,
       xkDialogVis: false,
       passwordForm: {
@@ -97,6 +97,7 @@ export default {
         this.$store.state.page.$message.error('两次输入密码不一致!')
         return
       }
+      this.passwordLoading = true
       var params = new FormData();
       params.append('username', this.$store.state.user.username)
       params.append('password', this.passwordForm.oldPassword)
@@ -108,10 +109,12 @@ export default {
             } else {
               this.$store.state.page.$message.error(resp.data.msg)
             }
+            this.passwordLoading = false
+            this.closePasswordDialog()
           })
-      this.closePasswordDialog()
     },
     submitXk() {
+      this.xkLoading = true
       var params = new FormData();
       params.append('username', this.$store.state.user.username)
       params.append('xkId', this.xkForm.xkAccount)
@@ -124,8 +127,10 @@ export default {
             } else {
               this.$store.state.page.$message.error(resp.data.msg)
             }
+            this.xkLoading = false
+            this.closeXkDialog()
           })
-      this.closeXkDialog()
+
     },
     closePasswordDialog() {
       this.passwordForm = {

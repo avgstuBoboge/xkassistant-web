@@ -7,7 +7,7 @@
     </div>
     <div style="margin-left: auto;margin-right: auto;width: 69%">
       <el-button
-          @click="createForm={username: '',password: '',xkAccount: '',xkPassword: '',isAdmin: false,};createDialogVis=true">
+          @click="createForm={username: '',password: '',xkAccount: '',xkPassword: '',isAdmin: false};createDialogVis=true">
         <i class="el-icon-plus"/>
       </el-button>
     </div>
@@ -137,7 +137,7 @@ export default {
     }
   },
   methods: {
-    changeAdmin: function ($event, username) {
+    changeAdmin($event, username) {
       console.log($event)
       console.log(username)
     },

@@ -4,8 +4,8 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 
-const debug = true
-const api = debug ? 'http://10.67.167.13:8090' : 'https://xkb.thebbg.top'
+const debug = false
+const api = debug ? 'http://10.67.167.13:9090' : 'http://116.62.158.202:9090'
 var state = {
     page: null,
     api: api,
@@ -30,6 +30,7 @@ var mutations = {
                     state.user.xkAccount = resp.data.data.xkId
                     state.user.isAdmin = resp.data.data.isAdmin
                     state.user.isUpdated = true
+                    state.page.$router.push('/main')
                 } else {
                     if (state.page.$route.path !== '/' && state.page.$route.path !== '/login') {
                         state.page.$message.error(resp.data.msg)
@@ -46,10 +47,7 @@ var mutations = {
             .then(data => {
                 if (data.data.code === 200) {
                     state.page.$message.success(data.data.msg)
-                    console.log(data)
-                    console.log('update')
                     state.page.$store.commit('updateUser')
-                    state.page.$router.push('/main')
                 } else {
                     state.page.$message.error(data.data.msg)
                 }
