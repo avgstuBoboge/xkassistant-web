@@ -29,23 +29,21 @@
                :before-close="closePasswordDialog"
                append-to-body
                v-loading="passwordLoading"
+               element-loading-text="修改中"
                title="修改密码"
                width="25%">
-      <el-form :model="passwordForm" element-loading-text="修改中">
-        <el-form-item label="旧密码">
-          <el-input v-model="passwordForm.oldPassword" type="password" show-password
-                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+      <el-form :model="passwordForm" :rules="passwordRules" ref="passwordForm" status-icon class="demo-ruleForm">
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="passwordForm.oldPassword" type="password" show-password></el-input>
         </el-form-item>
-        <el-form-item label="新密码">
-          <el-input v-model="passwordForm.newPassword" type="password" show-password
-                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="passwordForm.newPassword" type="password" show-password></el-input>
         </el-form-item>
-        <el-form-item label="重复密码">
-          <el-input v-model="passwordForm.newPassword2" type="password" show-password
-                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+        <el-form-item label="重复密码" prop="newPassword2">
+          <el-input v-model="passwordForm.newPassword2" type="password" show-password></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" style="width: 20%;float: right;margin-right: 65%" @click="submitPassword">提交
+          <el-button type="primary" style="width: 20%;" @click="submitPassword">提交
           </el-button>
         </el-form-item>
       </el-form>
@@ -54,18 +52,18 @@
                :before-close="closeXkDialog"
                append-to-body
                v-loading="xkLoading"
+               element-loading-text="爬取选课网账号信息中"
                title="修改绑定账号"
                width="25%">
-      <el-form :model="xkForm" element-loading-text="爬取选课网账号信息中">
-        <el-form-item label="选课账号">
-          <el-input v-model="xkForm.xkAccount" style="width: 80%;float: right;margin-right: 5%"></el-input>
+      <el-form :rules="xkRules" ref="xkForm" :model="xkForm" status-icon class="demo-ruleForm">
+        <el-form-item label="选课账号" prop="xkAccount">
+          <el-input v-model="xkForm.xkAccount"></el-input>
         </el-form-item>
-        <el-form-item label="选课密码">
-          <el-input v-model="xkForm.xkPassword" type="password" show-password
-                    style="width: 80%;float: right;margin-right: 5%"></el-input>
+        <el-form-item label="选课密码" prop="xkPassword">
+          <el-input v-model="xkForm.xkPassword" type="password" show-password></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" style="width: 20%;float: right;margin-right: 65%" @click="submitXk">提交
+          <el-button type="primary" style="width: 20%" @click="submitXk">提交
           </el-button>
         </el-form-item>
       </el-form>
@@ -87,9 +85,18 @@ export default {
         newPassword: '',
         newPassword2: ''
       },
+      passwordRules: {
+        oldPassword: [{required: true, message: '请输入旧密码', trigger: 'blur'}],
+        newPassword: [{required: true, message: '请输入新密码', trigger: 'blur'}],
+        newPassword2: [{required: true, message: '请确认新密码', trigger: 'blur'}]
+      },
       xkForm: {
         xkAccount: this.$store.state.user.xkAccount,
         xkPassword: ''
+      },
+      xkRules: {
+        xkAccount: [{required: true, message: '请输入选课账号', trigger: 'blur'}],
+        xkPassword: [{required: true, message: '请输入选课密码', trigger: 'blur'}],
       }
     }
   },

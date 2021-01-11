@@ -290,9 +290,7 @@ export default {
     doSearch() {
       if (this.inPlan) return
       this.searchLoading = true
-      var params = new FormData();
-      params.append('keywords', this.search)
-      this.$store.state.page.$http.post(this.$store.state.api + '/course/search', params)
+      this.$store.state.page.$http.get(this.$store.state.api + '/course/search', {params: {keywords: this.search}})
           .then(resp => {
             if (resp.data.code === 200) {
               this.results = resp.data.data
