@@ -5,58 +5,27 @@
                  clearable>
         <template v-for="i in 10">
           <el-option v-bind:key="i" :label="(nowYear-i+1).toString() + '-' + (nowYear-i+2).toString()"
-                     :value="i"></el-option>
+                     :value="(nowYear-i+1).toString() + '-' + (nowYear-i+2).toString()"></el-option>
         </template>
       </el-select>
       <el-select v-model="semester" slot="prepend" placeholder="所有学期" style="width: 150px;margin-left: 10px"
                  clearable>
         <el-option label="1" value="1"></el-option>
         <el-option label="2" value="2"></el-option>
-        <el-option label="3" value="3"></el-option>
       </el-select>
-      <el-button slot="append" icon="el-icon-search"></el-button>
+      <el-button slot="append" icon="el-icon-search" @click="getCreditTable"></el-button>
     </el-input>
-    <div class="horizontal-center" style="margin-top:20px;width: 60%;font-size: 18px">
-      <a>课程性质:</a>
-      <el-checkbox style="margin-left: 30px;margin-right: 0"></el-checkbox>
-      <a style="margin-left: 10px">必修</a>
-      <el-checkbox style="margin-left: 30px;margin-right: 0"></el-checkbox>
-      <a style="margin-left: 10px">限选</a>
-      <el-checkbox style="margin-left: 30px;margin-right: 0"></el-checkbox>
-      <a style="margin-left: 10px">公选</a>
-      <a style="margin-left: 25%">课程标签:</a>
-      <el-checkbox style="margin-left: 30px;margin-right: 0"></el-checkbox>
-      <a style="margin-left: 10px">体育课</a>
-      <el-checkbox style="margin-left: 30px;margin-right: 0"></el-checkbox>
-      <a style="margin-left: 10px">英语拓展课</a>
-      <el-checkbox style="margin-left: 30px;margin-right: 0"></el-checkbox>
-      <a style="margin-left: 10px">未通过课程</a>
-    </div>
-    <el-card style="margin-right: auto;margin-left: auto;margin-top: 30px;width: 60%;height: 450px" shadow="never">
-      <el-table style="margin: 0" :data="courseTableData"
-                stripe="stripe" max-height="400">
-        <el-table-column align="center" label="学年" prop="year"></el-table-column>
-        <el-table-column align="center" label="学期" prop="semester"></el-table-column>
-        <el-table-column align="center" label="课程编号" prop="courseID"></el-table-column>
-        <el-table-column align="center" label="课程名称" prop="courseName"></el-table-column>
-        <el-table-column align="center" label="性质" prop="category"></el-table-column>
-        <el-table-column align="center" label="学分" prop="credit"></el-table-column>
-        <el-table-column align="center" label="成绩" prop="grade"></el-table-column>
+    <el-card style="margin-right: auto;margin-left: auto;margin-top: 30px;width: 60%;height: 750px" shadow="never">
+      <el-table style="margin: 0" :data="courseTableData" v-loading="!this.$store.state.user.xkAccount"
+                stripe="stripe" max-height="720">
+        <el-table-column align="center" label="学年" prop="year" sortable></el-table-column>
+        <el-table-column align="center" label="学期" prop="term" sortable></el-table-column>
+        <el-table-column align="center" label="课程编号" prop="courseId" sortable></el-table-column>
+        <el-table-column align="center" label="课程名称" prop="courseName" sortable></el-table-column>
+        <el-table-column align="center" label="学分" prop="credit" sortable></el-table-column>
+        <el-table-column align="center" label="成绩" prop="score" sortable></el-table-column>
       </el-table>
     </el-card>
-    <el-card style="margin-right: auto;margin-left: auto;margin-top: 30px;width: 60%;height: 300px" shadow="never">
-      <el-table style="margin: 0" :data="creditTableData" stripe="stripe" max-height="250">
-        <el-table-column align="center" label="课程性质" prop="category"></el-table-column>
-        <el-table-column align="center" label="学分要求" prop="require"></el-table-column>
-        <el-table-column align="center" label="获得学分" prop="gained"></el-table-column>
-        <el-table-column align="center" label="未通过学分" prop="failed" width="300px"></el-table-column>
-        <el-table-column align="center" label="还需学分" prop="need"></el-table-column>
-      </el-table>
-    </el-card>
-    <div style="width: 60%;margin-left: auto;margin-right: auto;margin-top: 20px;font-size: 18px;">
-      <span>平均学分绩点: {{ this.GPA }}</span>
-      <span style="margin-left: 30px">学分绩点总和: {{ this.GPS }}</span>
-    </div>
   </div>
 </template>
 
@@ -68,36 +37,57 @@ export default {
       kwords: '',
       yearInterval: '',
       semester: '',
+      finishLoading: false,
       courseTableData: [{
         year: '2019-2020',
         semester: '2',
-        courseID: '301259',
+        courseId: '301259',
         courseName: '操作系统原理实验',
         category: '必修',
         credit: '1',
         grade: '优'
-      }, {
-        year: '2019-2020',
-        semester: '2',
-        courseID: '301259',
-        courseName: '操作系统原理实验',
-        category: '必修',
-        credit: '1',
-        grade: '优'
-      }],
-      creditTableData: [{
-        category: '必修'
-      }, {
-        category: '限选'
-      }, {
-        category: '公选'
-      }, {
-        category: '合计'
       }],
       GPA: '5.0',
       GPS: '140.0',
       nowYear: new Date().getFullYear(),
     }
+  },
+  methods: {
+    getCreditTable() {
+      this.$store.state.page.$http.get(this.$store.state.api + '/finish/search', {
+        params: {
+          year: this.yearInterval,
+          term: this.semester,
+          keywords: this.kwords
+        }
+      }).then(resp => {
+        if (resp.data.code === 200) {
+          this.courseTableData = resp.data.data
+          this.$message.success(resp.data.msg)
+        } else {
+          this.$message.error(resp.data.msg)
+        }
+        this.finishLoading = false
+      })
+    },
+    permissionCheck() {
+      if (this.$store.state.user.isUpdated) {
+        if (this.$route.path === '/admin' && !this.$store.state.user.isAdmin) {
+          this.$router.replace('/error401')
+        } else if (this.$route.path !== '/admin' && !this.$store.state.user.username) {
+          this.$router.replace('/error401')
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
+    }
+  },
+  created() {
+    document.title = '已修课程查询页面'
+    this.getCreditTable()
+    this.permissionCheck()
   }
 }
 </script>

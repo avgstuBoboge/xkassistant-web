@@ -33,6 +33,9 @@ export default {
       else
         this.$router.push('/login')
     }
+  },
+  created() {
+    document.title = '首页'
   }
 }
 </script>

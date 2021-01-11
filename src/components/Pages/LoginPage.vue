@@ -49,6 +49,9 @@ export default {
     goRegister() {
       this.$router.push('/register')
     }
+  },
+  created() {
+    document.title = '登陆页面'
   }
 }
 </script>

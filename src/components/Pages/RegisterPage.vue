@@ -34,14 +34,14 @@
       <!--      <el-form-item class="info">-->
       <!--        <el-input class="info"-->
       <!--                  placeholder="请输入选课网账号"-->
-      <!--                  v-model="xkAccount"-->
+      <!--                  v-model="xkId"-->
       <!--                  prefix-icon="el-icon-user">-->
       <!--        </el-input>-->
       <!--      </el-form-item>-->
       <!--      <el-form-item class="info">-->
       <!--        <el-input class="info"-->
       <!--                  placeholder="请输入选课网密码"-->
-      <!--                  v-model="xkPassword"-->
+      <!--                  v-model="xkPwd"-->
       <!--                  type="password"-->
       <!--                  show-password-->
       <!--                  prefix-icon="el-icon-key">-->
@@ -101,6 +101,9 @@ export default {
     goBack() {
       this.$router.back()
     }
+  },
+  created() {
+    document.title = '注册页面'
   }
 }
 </script>

@@ -103,7 +103,6 @@
           </div>
         </el-aside>
         <el-main>
-          <p style="font-size: 20px;margin-bottom: 12px;margin-top: 0">注: 课表出现问题请刷新页面，使用中出现任何问题请反馈。QQ:1026751519</p>
           <el-card v-loading="tableLoading" element-loading-text="拼命加载中">
             <el-table border
                       :key="tableKey"
@@ -507,13 +506,24 @@ export default {
               this.$store.state.page.$message.error(resp.data.msg)
             }
           })
+    },
+    permissionCheck() {
+      if (this.$store.state.user.isUpdated) {
+        if (this.$route.path === '/admin' && !this.$store.state.user.isAdmin) {
+          this.$router.replace('/error401')
+        } else if (this.$route.path !== '/admin' && !this.$store.state.user.username) {
+          this.$router.replace('/error401')
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
     }
   },
   created() {
-    if (this.$store.state.user.xkAccount === '') {
-      this.$store.state.page.$message.error('请先绑定选课网账号!')
-      this.$router.push('/setting')
-    }
+    document.title = '选课页面'
+    this.permissionCheck()
     this.searchLoading = true
     this.tableLoading = true
     for (let i = 0; i < 12; ++i) {

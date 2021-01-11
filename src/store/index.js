@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 
 const debug = false
-const api = debug ? 'http://10.67.167.13:9090' : 'http://116.62.158.202:9090'
+const api = debug ? 'http://10.67.224.122:9090' : 'http://116.62.158.202:9090'
 var state = {
     page: null,
     api: api,
@@ -31,9 +31,11 @@ var mutations = {
                     state.user.isAdmin = resp.data.data.isAdmin
                     state.user.isUpdated = true
                     state.page.$router.push('/main')
+                    this.getCredit()
                 } else {
                     if (state.page.$route.path !== '/' && state.page.$route.path !== '/login') {
                         state.page.$message.error(resp.data.msg)
+                        state.page.$router.push('/login')
                     }
                     state.user.isUpdated = true
                 }
@@ -59,7 +61,7 @@ var mutations = {
                 if (data.data.code === 200) {
                     state.user = {
                         username: '',
-                        xkAccount: '',
+                        xkId: '',
                         isAdmin: false,
                         isUpdated: false
                     }
@@ -85,6 +87,17 @@ var mutations = {
                 }
             })
     },
+    getCredit() {
+        state.page.$http.post(api + '/finish/fetch')
+            .then(resp => {
+                if (resp.data.code === 200) {
+                    state.page.$message.success(resp.data.msg)
+
+                } else {
+                    state.page.$message.error(resp.data.msg)
+                }
+            })
+    }
 }
 
 export default new Vuex.Store({

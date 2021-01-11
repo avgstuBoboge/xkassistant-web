@@ -46,6 +46,18 @@ export default new Router({
             name: 'credit-page',
             component: () => import('@/components/Pages/CreditPage'),
             meta: {}
+        },
+        {
+            path: '/error401',
+            name: '401-page',
+            component: () => import('@/components/Pages/Error401Page'),
+            meta: {}
+        },
+        {
+            path: '*',
+            name: '404-page',
+            component: () => import('@/components/Pages/Error404Page'),
+            meta: {}
         }
     ],
 })

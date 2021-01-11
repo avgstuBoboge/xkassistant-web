@@ -28,9 +28,10 @@
     <el-dialog :visible.sync="passwordDialogVis"
                :before-close="closePasswordDialog"
                append-to-body
+               v-loading="passwordLoading"
                title="修改密码"
                width="25%">
-      <el-form :model="passwordForm" v-loading="passwordLoading" element-loading-text="修改中">
+      <el-form :model="passwordForm" element-loading-text="修改中">
         <el-form-item label="旧密码">
           <el-input v-model="passwordForm.oldPassword" type="password" show-password
                     style="width: 80%;float: right;margin-right: 5%"></el-input>
@@ -52,9 +53,10 @@
     <el-dialog :visible.sync="xkDialogVis"
                :before-close="closeXkDialog"
                append-to-body
+               v-loading="xkLoading"
                title="修改绑定账号"
                width="25%">
-      <el-form :model="xkForm" v-loading="xkLoading" element-loading-text="爬取选课网账号信息中">
+      <el-form :model="xkForm" element-loading-text="爬取选课网账号信息中">
         <el-form-item label="选课账号">
           <el-input v-model="xkForm.xkAccount" style="width: 80%;float: right;margin-right: 5%"></el-input>
         </el-form-item>
@@ -127,6 +129,7 @@ export default {
             } else {
               this.$store.state.page.$message.error(resp.data.msg)
             }
+            this.$store.commit('getCredit')
             this.xkLoading = false
             this.closeXkDialog()
           })
@@ -142,11 +145,28 @@ export default {
     },
     closeXkDialog() {
       this.xkForm = {
-        xkAccount: this.$store.state.user.xkAccount,
-        xkPassword: ''
+        xkId: this.$store.state.user.xkAccount,
+        xkPwd: ''
       }
       this.xkDialogVis = false
+    },
+    permissionCheck() {
+      if (this.$store.state.user.isUpdated) {
+        if (this.$route.path === '/admin' && !this.$store.state.user.isAdmin) {
+          this.$router.replace('/error401')
+        } else if (this.$route.path !== '/admin' && !this.$store.state.user.username) {
+          this.$router.replace('/error401')
+        }
+      } else {
+        setTimeout(() => {
+          this.permissionCheck()
+        }, 100)
+      }
     }
+  },
+  created() {
+    document.title = '设置页面'
+    this.permissionCheck()
   }
 }
 </script>
