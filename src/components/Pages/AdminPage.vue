@@ -376,7 +376,7 @@ export default {
             } else {
               this.$store.state.page.$message.error(data.data.msg)
             }
-            this.userUpdateLoading = false
+            this.courseUpdateLoading = false
             this.closeCourseEditDialog()
           })
     },
