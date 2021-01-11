@@ -1,7 +1,8 @@
 <template>
   <div class="page-part">
-    <el-tabs type="border-card" style="margin-left: auto;margin-right: auto;width: 70%;min-height: 750px">
-      <el-tab-pane label="用户管理">
+    <el-tabs type="border-card" style="margin-left: auto;margin-right: auto;width: 70%;min-height: 750px"
+             @tab-click="doSearch" v-model="tabName">
+      <el-tab-pane label="用户管理" name="user">
         <div style="margin-left: auto;margin-right: auto;width: 50%">
           <el-input placeholder="请输入用户名" v-model="userKwords">
             <el-button slot="append" icon="el-icon-search" @click="userSearch"></el-button>
@@ -37,7 +38,7 @@
           </el-table>
         </div>
         <el-dialog :visible.sync="userCreateDialogVis"
-                   :before-close="closeCreateDialog"
+                   :before-close="closeUserCreateDialog"
                    append-to-body
                    v-loading="userCreateLoading"
                    title="添加用户"
@@ -67,13 +68,13 @@
               <el-button type="primary"
                          style="width: 20%;margin-right: 10%;float: right" @click="createUser">确定
               </el-button>
-              <el-button style="width: 20%;margin-right: 3%;float: right" @click="closeCreateDialog">取消
+              <el-button style="width: 20%;margin-right: 3%;float: right" @click="closeUserCreateDialog">取消
               </el-button>
             </el-form-item>
           </el-form>
         </el-dialog>
         <el-dialog :visible.sync="userEditDialogVis"
-                   :before-close="closeEditDialog"
+                   :before-close="closeUserEditDialog"
                    append-to-body
                    title="编辑用户"
                    v-loading="userUpdateLoading"
@@ -99,30 +100,104 @@
               <el-button type="primary"
                          style="width: 20%;margin-right: 10%;float: right" @click="updateUser">确定
               </el-button>
-              <el-button style="width: 20%;margin-right: 3%;float: right" @click="closeEditDialog">取消
+              <el-button style="width: 20%;margin-right: 3%;float: right" @click="closeUserEditDialog">取消
               </el-button>
             </el-form-item>
           </el-form>
         </el-dialog>
       </el-tab-pane>
-<!--      <el-tab-pane label="课程管理">-->
-<!--        <div style="margin-left: auto;margin-right: auto;width: 50%">-->
-<!--          <el-input placeholder="请输入课程名" v-model="courseKwords">-->
-<!--            <el-button slot="append" icon="el-icon-search" @click="courseSearch"></el-button>-->
-<!--          </el-input>-->
-<!--        </div>-->
-<!--        <div style="margin-left: auto;margin-right: auto;width: 87%">-->
-<!--          <el-button-->
-<!--              @click="courseCreateForm={username: '',password: '',xkId: '',xkPwd: '',isAdmin: false};courseCreateDialogVis=true">-->
-<!--            <i class="el-icon-plus"/>-->
-<!--          </el-button>-->
-<!--        </div>-->
-<!--        <div style="margin-left: auto;margin-right: auto;width: 100%">-->
-<!--          <el-table :data="courseTableData" v-loading="courseTableLoading">-->
-
-<!--          </el-table>-->
-<!--        </div>-->
-<!--      </el-tab-pane>-->
+      <el-tab-pane label="课程管理" name="course">
+        <div style="margin-left: auto;margin-right: auto;width: 50%">
+          <el-input placeholder="请输入课程名" v-model="courseKwords">
+            <el-button slot="append" icon="el-icon-search" @click="courseSearch"></el-button>
+          </el-input>
+        </div>
+        <div style="margin-left: auto;margin-right: auto;width: 87%">
+          <el-button
+              @click="courseCreateForm={courseId: '', name: '',credit: ''}; courseCreateDialogVis=true">
+            <i class="el-icon-plus"/>
+          </el-button>
+        </div>
+        <div style="margin-left: auto;margin-right: auto;width: 100%">
+          <el-table :data="courseTableData" max-height="700px" v-loading="courseTableLoading">
+            <el-table-column label="课程代码" align="center" prop="courseId" sortable></el-table-column>
+            <el-table-column label="课程名" align="center" prop="name" sortable></el-table-column>
+            <el-table-column label="学分" align="center" prop="credit" sortable></el-table-column>
+            <el-table-column fixed="right" width="180px">
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="courseEditForm=scope.row;courseEditDialogVis = true;">修 改
+                </el-button>
+                <el-button type="danger" size="mini" @click="deleteCourse(scope.row.courseId)">删 除</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column type="expand" fixed="right">
+              <template slot-scope="scope">
+                <el-table :data="scope.row.teachList" border stripe>
+                  <el-table-column label="教师" align="center" prop="teacher"></el-table-column>
+                  <el-table-column label="时间" align="center" prop="time"></el-table-column>
+                  <el-table-column label="地点" align="center" prop="addr"></el-table-column>
+                </el-table>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <el-dialog :visible.sync="courseCreateDialogVis"
+                   :before-close="closeCourseCreateDialog"
+                   append-to-body
+                   v-loading="courseCreateLoading"
+                   title="添加课程"
+                   width="25%">
+          <el-form ref="createForm" :model="courseCreateForm">
+            <el-form-item label="课程编号">
+              <el-input v-model="courseCreateForm.courseId"
+                        style="width: 50%;margin-right: 10%;float: right"></el-input>
+            </el-form-item>
+            <el-form-item label="课程名">
+              <el-input v-model="courseCreateForm.name"
+                        style="width: 50%;margin-right: 10%;float: right"></el-input>
+            </el-form-item>
+            <el-form-item label="学分">
+              <el-input v-model="courseCreateForm.credit"
+                        style="width: 50%;margin-right: 10%;float: right"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary"
+                         style="width: 20%;margin-right: 10%;float: right" @click="createCourse">确定
+              </el-button>
+              <el-button style="width: 20%;margin-right: 3%;float: right" @click="closeCourseCreateDialog">取消
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
+        <el-dialog :visible.sync="courseEditDialogVis"
+                   :before-close="closeCourseEditDialog"
+                   append-to-body
+                   title="编辑课程"
+                   v-loading="courseUpdateLoading"
+                   width="25%">
+          <el-form ref="editForm" :model="courseEditForm">
+            <el-form-item label="课程编号">
+              <el-input disabled v-model="courseEditForm.courseId"
+                        style="width: 50%;margin-right: 10%;float: right"></el-input>
+            </el-form-item>
+            <el-form-item label="课程名">
+              <el-input v-model="courseEditForm.name"
+                        style="width: 50%;margin-right: 10%;float: right"></el-input>
+            </el-form-item>
+            <el-form-item label="学分">
+              <el-input v-model="courseEditForm.credit"
+                        style="width: 50%;margin-right: 10%;float: right"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary"
+                         style="width: 20%;margin-right: 10%;float: right" @click="updateCourse">确定
+              </el-button>
+              <el-button style="width: 20%;margin-right: 3%;float: right" @click="closeCourseEditDialog">取消
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -132,6 +207,7 @@ export default {
   name: "AdminPage",
   data() {
     return {
+      tabName: 'user',
       userKwords: '',
       courseKwords: '',
       editUsername: '',
@@ -141,7 +217,6 @@ export default {
       userCreateDialogVis: false,
       userCreateLoading: false,
       userUpdateLoading: false,
-      userSearchLoading: false,
       userTableData: [],
       userEditForm: {
         username: '',
@@ -161,24 +236,40 @@ export default {
       courseCreateDialogVis: false,
       courseCreateLoading: false,
       courseUpdateLoading: false,
-      courseSearchLoading: false,
       courseTableData: [],
       courseEditForm: {
-        username: '',
-        password: '',
-        xkId: '',
-        xkPwd: ''
+        courseId: '',
+        name: '',
+        credit: ''
       },
       courseCreateForm: {
-        username: '',
-        password: '',
-        xkId: '',
-        xkPwd: '',
-        isAdmin: false,
+        courseId: '',
+        name: '',
+        credit: ''
       },
     }
   },
   methods: {
+    deleteCourse(courseId) {
+      var params = new FormData();
+      params.append('courseId', courseId)
+      this.$store.state.page.$http.post(this.$store.state.api + '/course/del', params)
+          .then(resp => {
+            if (resp.data.code === 200) {
+              this.$store.state.page.$message.success(resp.data.msg)
+            } else {
+              this.$store.state.page.$message.error(resp.data.msg)
+            }
+            this.doSearch()
+          })
+    },
+    doSearch() {
+      if (this.tabName === 'user') {
+        this.userSearch()
+      } else {
+        this.courseSearch()
+      }
+    },
     createUser() {
       this.userCreateLoading = true
       var params = new FormData();
@@ -193,7 +284,7 @@ export default {
                 this.$store.state.page.$message.success(data.data.msg)
                 this.$store.commit('updateUser')
                 this.userCreateLoading = false
-                this.closeCreateDialog()
+                this.closeUserCreateDialog()
               } else {
                 params = new FormData();
                 params.append('username', form.username)
@@ -208,15 +299,35 @@ export default {
                         this.$store.state.page.$message.error(resp.data.msg)
                       }
                       this.userCreateLoading = false
-                      this.closeCreateDialog()
+                      this.closeUserCreateDialog()
                     })
               }
             } else {
               this.$store.state.page.$message.error(data.data.msg)
               this.userCreateLoading = false
-              this.closeCreateDialog()
+              this.closeUserCreateDialog()
             }
           })
+      this.doSearch()
+    },
+    createCourse() {
+      this.courseCreateLoading = true
+      var params = new FormData();
+      let form = this.courseCreateForm
+      params.append('courseId', form.courseId)
+      params.append('name', form.name)
+      params.append('credit', form.credit)
+      this.$store.state.page.$http.post(this.$store.state.api + '/course/new', params)
+          .then(data => {
+            if (data.data.code === 200) {
+              this.$store.state.page.$message.success(data.data.msg)
+            } else {
+              this.$store.state.page.$message.error(data.data.msg)
+            }
+            this.userCreateLoading = false
+            this.closeCourseCreateDialog()
+          })
+      this.doSearch()
     },
     updateUser() {
       this.userUpdateLoading = true
@@ -240,13 +351,33 @@ export default {
                       this.$store.state.page.$message.error(resp.data.msg)
                     }
                     this.userUpdateLoading = false
-                    this.closeEditDialog()
+                    this.closeUserEditDialog()
                   })
             } else {
               this.$store.state.page.$message.error(data.data.msg)
               this.userUpdateLoading = false
-              this.closeEditDialog()
+              this.closeUserEditDialog()
             }
+          })
+      this.doSearch()
+    },
+    updateCourse() {
+      this.courseUpdateLoading = true
+      var params = new FormData();
+      let form = this.courseEditForm
+      params.append('oldId', form.courseId)
+      params.append('newId', form.courseId)
+      params.append('name', form.name)
+      params.append('credit', form.credit)
+      this.$store.state.page.$http.post(this.$store.state.api + '/course/update', params)
+          .then(data => {
+            if (data.data.code === 200) {
+              this.$store.state.page.$message.success(data.data.msg)
+            } else {
+              this.$store.state.page.$message.error(data.data.msg)
+            }
+            this.userUpdateLoading = false
+            this.closeCourseEditDialog()
           })
     },
     changeAdmin(row) {
@@ -263,7 +394,7 @@ export default {
             this.userSearch()
           })
     },
-    closeEditDialog() {
+    closeUserEditDialog() {
       this.userEditForm = {
         username: '',
         password: '',
@@ -271,8 +402,18 @@ export default {
         xkPwd: ''
       }
       this.userEditDialogVis = false
+      this.doSearch()
     },
-    closeCreateDialog() {
+    closeCourseEditDialog() {
+      this.courseEditForm = {
+        courseId: '',
+        name: '',
+        credit: ''
+      }
+      this.courseEditDialogVis = false
+      this.doSearch()
+    },
+    closeUserCreateDialog() {
       this.userCreateForm = {
         username: '',
         password: '',
@@ -281,6 +422,16 @@ export default {
         isAdmin: false,
       }
       this.userCreateDialogVis = false
+      this.doSearch()
+    },
+    closeCourseCreateDialog() {
+      this.courseCreateForm = {
+        courseId: '',
+        name: '',
+        credit: ''
+      }
+      this.courseCreateDialogVis = false
+      this.doSearch()
     },
     permissionCheck() {
       if (this.$store.state.user.isUpdated) {
@@ -297,8 +448,6 @@ export default {
     },
     userSearch() {
       this.userSearchLoading = true
-      var params = new FormData();
-      params.append('keywords', this.userKwords)
       this.$store.state.page.$http.get(this.$store.state.api + '/user/search', {params: {keywords: this.userKwords}})
           .then(resp => {
             if (resp.data.code === 200) {
@@ -307,6 +456,19 @@ export default {
               this.$store.state.page.$message.error(resp.data.msg)
             }
             this.userSearchLoading = false
+          })
+    },
+    courseSearch() {
+      this.courseTableLoading = true
+      this.$store.state.page.$http.get(this.$store.state.api + '/course/search', {params: {keywords: this.courseKwords}})
+          .then(resp => {
+            if (resp.data.code === 200) {
+              this.courseTableData = resp.data.data
+            } else {
+              this.$store.state.page.$message.error(resp.data.msg)
+            }
+            this.courseTableLoading = false
+            console.log('course loading finish')
           })
     }
   },
