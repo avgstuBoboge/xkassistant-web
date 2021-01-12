@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 
 const debug = false
-const api = debug ? 'http://10.67.224.122:9090' : 'http://116.62.158.202:9090'
+const api = debug ? 'http://10.67.224.122:9090' : 'https://xkback.thebbg.top:9090'
 var state = {
     page: null,
     api: api,
